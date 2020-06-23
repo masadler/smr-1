@@ -6,40 +6,47 @@
 # ---------------------------------------------------------------------
 
 # Directory of the target
-OUTPUT = smr_linux
+OUTPUT = smr
 
 # Compiler
 CXX = g++
 
 # EIGEN library
-EIGEN_PATH = ../Lib/eigen
+EIGEN_PATH = /software/include/
 
 # Intel MKL library
 #MKL_PATH = /opt/intel/mkl
 
 # Compiler flags
-CXXFLAGS = -w -O3 -m64 -fopenmp -I $(EIGEN_PATH) -DEIGEN_NO_DEBUG 
-LIB += -static -lz -Wl,-lm -ldl
+CXXFLAGS = -w -O3 -m64 -fopenmp -I $(EIGEN_PATH) -DEIGEN_NO_DEBUG -std=c++11 
+#LIB += -static -lz -Wl,-lm -ldl
 #LIB += -lz -Wl, -lm -ldl
+LIB += -static -lz -lgomp
 
 HDR += CommFunc.h \
-	   cdflib.h \
-	   dcdflib.h \
+           cdflib.h \
+           dcdflib.h \
            SMR.h \
-	   ipmpar.h \
+           ipmpar.h \
            StatFunc.h \
            StrFunc.h \
             SMR_data.h \
-            eData.h \
-            SMR_data_p1.h
+            SMR_plot.h \
+            SMR_data_p1.h \
+            SMR_data_p2.h \
+           SMR_data_p3.h \
+           bfile.hpp
 SRC = SMR.cpp \
            CommFunc.cpp \
            SMR_data.cpp \
-	   dcdflib.cpp \
+           dcdflib.cpp \
            StatFunc.cpp \
-           StrFunc.cpp	\
-           eData.cpp \
-           SMR_data_p1.cpp
+           StrFunc.cpp  \
+           SMR_plot.cpp \
+           SMR_data_p1.cpp \
+           SMR_data_p2.cpp \
+           SMR_data_p3.cpp \
+           bfile.cpp
 
 OBJ = $(SRC:.cpp=.o)
 
