@@ -236,6 +236,37 @@ int CommFunc::max_abs_id(VectorXd &zsxz)
     return(id);
 }
 
+int CommFunc::min_id(vector<double> &pyz)
+{
+    int id=0;
+    double tmpVal, cmpVal=abs(pyz[0]);
+    for( int i=1;i<pyz.size();i++)
+    {
+        tmpVal=abs(pyz[i]);
+        if( cmpVal-tmpVal > 1e-10)
+        {
+            cmpVal=tmpVal;
+            id=i;
+        }
+    }
+    return(id);
+}
+
+int CommFunc::min_id(VectorXd &pyz)
+{
+    int id=0;
+    double tmpVal, cmpVal=pyz[0];
+    for( int i=1;i<pyz.size();i++)
+    {        
+        tmpVal=pyz[i];
+        if( cmpVal-tmpVal > 1e-10)
+        {
+            cmpVal=tmpVal;
+            id=i;
+         }
+    }
+    return(id);
+}
 
 void CommFunc::getRank(vector<double> &a, vector<int> &b)
 {

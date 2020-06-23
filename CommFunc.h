@@ -48,7 +48,7 @@
 #include <string.h>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
-#include <unsupported/Eigen/SparseExtra>
+#include <Eigen_unsupported/Eigen/SparseExtra>
 #include <Eigen/Eigenvalues>
 #include <queue>
 //#include <cmath> //already in Eigen
@@ -97,6 +97,8 @@ namespace CommFunc
     void FileExist(string filename);  
     int max_abs_id(VectorXd &zsxz);
     int max_abs_id(vector<double> &zsxz);
+    int min_id(vector<double> &pyz);
+    int min_id(VectorXd &pyz);
     void getRank(vector<double> &a, vector<int> &b);
     void getRank(vector<int> &a, vector<int> &b);
     void getRank_norep(vector<int> &a, vector<int> &b);
