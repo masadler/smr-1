@@ -18,6 +18,7 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <Eigen_unsupported/Eigen/SparseExtra>
+#include <Eigen_unsupported/Eigen/KroneckerProduct>
 #include <Eigen/Eigenvalues>
 
 using namespace Eigen;
