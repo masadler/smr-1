@@ -6,7 +6,7 @@
 # ---------------------------------------------------------------------
 
 # Directory of the target
-OUTPUT = smr
+OUTPUT = smrivw
 
 # Compiler
 CXX = g++
@@ -46,6 +46,7 @@ SRC = SMR.cpp \
            SMR_data_p1.cpp \
            SMR_data_p2.cpp \
            SMR_data_p3.cpp \
+           SMR_data_p4.cpp \
            bfile.cpp
 
 OBJ = $(SRC:.cpp=.o)
