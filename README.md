@@ -22,7 +22,7 @@ Alternatively compile the package making sure all the paths (e.g. Eigen library)
 
 Extensive documentation on data management functions (e.g. formatting input files, filtering input files) can be found on the official [SMR website](https://cnsgenomics.com/software/smr/). 
 
-Documentation of univariable and multivariable MR-IVW is provided on this [Github-Wiki]().
+Documentation of univariable and multivariable MR-IVW is provided on this [Github-Wiki](https://github.com/masadler/smrivw/wiki).
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
