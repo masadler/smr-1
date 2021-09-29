@@ -14,7 +14,7 @@ _To be available soon!_
 
 ## Installation
 
-The software works on Unix / Linux platforms. Simply download the latest release [here]().
+The software works on Unix / Linux platforms. Simply download the latest release [here](https://github.com/masadler/smrivw/releases).
 
 Alternatively compile the package making sure all the paths (e.g. Eigen library) point to the right location on your system.
 
