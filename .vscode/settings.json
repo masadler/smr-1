@@ -21,6 +21,9 @@
         "bitset": "cpp",
         "initializer_list": "cpp",
         "utility": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "limits": "cpp",
+        "system_error": "cpp",
+        "cstdlib": "cpp"
     }
 }

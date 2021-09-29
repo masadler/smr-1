@@ -18,7 +18,6 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <Eigen_unsupported/Eigen/SparseExtra>
-#include <Eigen_unsupported/Eigen/KroneckerProduct>
 #include <Eigen/Eigenvalues>
 
 using namespace Eigen;
@@ -96,7 +95,6 @@ namespace StatFunc
     double dnorm(double x);
     double qnorm_sub(double x, double y);
     double qnorm(double p, bool upper = true);
-    double qnorm5(double p, int lower_tail = 0);
 
     // chisq distribution
     double pchisq(double x, double df);

@@ -181,8 +181,7 @@ void StrFunc::match(const vector<string> &VecA, const vector<string> &VecB, vect
         iter=id_map.find(VecA[i]);
         if(iter==id_map.end()) VecC.push_back(-9);
         else VecC.push_back(iter->second);
-    }
-    
+    }   
 }
 void StrFunc::match_only(const vector<string> &VecA, const vector<string> &VecB, vector<uint32_t> &VecC)
 {
