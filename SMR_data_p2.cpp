@@ -208,7 +208,7 @@ namespace SMRDATA
                     if(vs_buf[5].compare("NA") && vs_buf[5].compare("na"))
                     {
                         float fq=atof(vs_buf[5].c_str());
-                        if(fq<=0 || fq>=1)
+                        if(fq<0 || fq>1)
                         {
                             printf("ERROR: allele frequency should be between 0 and 1 in row %d.\n",lineNum+2);
                             exit(EXIT_FAILURE);
@@ -1105,7 +1105,7 @@ namespace SMRDATA
                 if(vs_buf[6].compare("NA") && vs_buf[6].compare("na"))
                 {
                     float fq=atof(vs_buf[6].c_str());
-                    if(fq<=1e-8 || fq>=1)
+                    if(fq<=1e-8 || fq>1)
                     {
                         printf("ERROR: allele frequency should be between 0 and 1 in row %d.\n", lineNum+2);
                         exit(EXIT_FAILURE);
@@ -1232,7 +1232,7 @@ namespace SMRDATA
                 if(vs_buf[6].compare("NA") && vs_buf[6].compare("na"))
                 {
                     float fq=atof(vs_buf[6].c_str());
-                    if(fq<=1e-8 || fq>=1)
+                    if(fq<=1e-8 || fq>1)
                     {
                         printf("ERROR: allele frequency should be between 0 and 1 in row %d.\n", lineNum+2);
                         exit(EXIT_FAILURE);
@@ -1714,7 +1714,7 @@ namespace SMRDATA
                         if(frqstr=="NA" ||frqstr=="na" )
                         {
                             frq=atof(frqstr.c_str());
-                            if(frq<=1e-8 || frq>=1)
+                            if(frq<=1e-8 || frq>1)
                             {
                                 printf("ERROR: allele frequency should be between 0 and 1 in file %s.\n", esdfilename.c_str());
                                 exit(EXIT_FAILURE);
