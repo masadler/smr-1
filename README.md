@@ -10,7 +10,6 @@ Wu Y, Zeng J, Zhang F, Zhu Z, Qi T, Zheng Z, Lloyd-Jones LR, Marioni RE, Martin 
 
 as well as the extension to univariable and multivariable MR-IVW analyses:
 
-Quantifying mediation between omics layers and complex traits
 Sadler MC, Auwerx C, Porcu E & Kutalik Z (2021) Quantifying mediation between omics layers and complex traits. [bioRxiv 2021.09.29.462396]( https://doi.org/10.1101/2021.09.29.462396)
 
 ## Installation
