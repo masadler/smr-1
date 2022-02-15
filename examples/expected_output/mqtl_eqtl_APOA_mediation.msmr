@@ -1,0 +1,2 @@
+Expo_ID	Expo_Name	Chr	Expo_bp	Top_Med_ID	Top_Med_Name	b_ivw_tot	se_ivw_tot	p_ivw_tot	b_direct_top	se_direct_top	p_direct_top	b_direct_cis	se_direct_cis	p_direct_cis	n_snps_tot	n_snps_top	n_snps_cis	n_snps_e	num_med_cis
+cg07689907	cg07689907	11	61582574	ENSG00000134824	FADS2	0.044821	0.00344457	1.08371e-38	0.0234767	0.00446792	1.48712e-07	0.0234767	0.00446792	1.48712e-07	21	58	58	17	1
