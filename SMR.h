@@ -25,7 +25,7 @@ static inline void FLAGS_VALID_CK(int option_num, char* option_str[])
         "--rm-technical", "--p-technical","--ld-lower-limit","--heidi-max-m","--extract-snp-p","--exclude-snp-p","--matrix-eqtl-format","--fastqtl-nominal-format","--fastqtl-permu-format","--add-n","--show-n","--update-epi",
         "--update-esi","--cis-to-all","--mecs","--pmecs","--mmecs","--sample-overlap","--ld-multi-snp","--extract-target-snp-probe","--extract-snp-probe","--disable-freq-ck","--diff-freq","--diff-freq-prop","--r","--r2",
         "--ld-wind","--bld","--make-bld","--snp-rm","--qtltools-nominal-format","--qtltools-permu-format", "--nmecs", "--beqtl-probe-match", "--mediation-probe-match", "--smr-gwas-to-gwas",
-        "--multi-uncorr-snp", "--get-snp-effects", "--min-snp", "--mediation-cis", "--beqtl-cis", "--calcul-cormat",
+        "--multi-uncorr-snp", "--get-snp-effects", "--get-snp-effects-top", "--min-snp", "--mediation-cis", "--beqtl-cis", "--calcul-cormat",
         "--incomplete-expo", "--core-mediators", "--mediator-qtls", "--mediator-corr-snps", "--mediation-trans", "--trans-dense", "--num-med", "--uncorr-med", "--p-shrinkage", 
         "--ld-matrix", "--p-expo-med", "--trev"
     };

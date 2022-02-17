@@ -188,6 +188,7 @@ void option(int option_num, char* option_str[])
     // for mediation analysis
     bool multi_corr_snp_flg = true;
     bool get_snp_effects_flg = false;
+    bool get_snp_effects_top_flg = false;
     int min_snp = 5;
     char* core_med_lst = NULL;
     char* qtl_med_lst = NULL;
@@ -1220,6 +1221,10 @@ void option(int option_num, char* option_str[])
             get_snp_effects_flg=true;
             printf("--get-snp-effects\n");
         }
+        else if (0 == strcmp(option_str[i], "--get-snp-effects-top")){
+            get_snp_effects_top_flg=true;
+            printf("--get-snp-effects-top\n");
+        }
         else if(strcmp(option_str[i],"--min-snp")==0){
             min_snp=atoi(option_str[++i]);
             printf("--min-snp %d\n", min_snp);
@@ -1267,7 +1272,7 @@ void option(int option_num, char* option_str[])
     else if((eqtlFileName2 != NULL) & prbmatch) smr_e2e_prbmatch(outFileName, bFileName,eqtlFileName2, eqtlFileName, maf,indilstName, snplstName,problstName,oproblstName,eproblstName,indilst2remove, snplst2exclde, problst2exclde,oproblst2exclde,eproblst2exclde,p_smr, cis_itvl,traitlstName,oprobe, eprobe, oprobe2rm, eprobe2rm,cis2all,ld_prune_multi, ldmatrix, trev, snpproblstName, diff_freq,diff_freq_ratio, get_snp_effects_flg, min_snp);
     else if((eqtlFileName2 != NULL) & e2e_cis) smr_e2e_cis(outFileName, bFileName,eqtlFileName2, eqtlFileName, maf,indilstName, snplstName,problstName,oproblstName,eproblstName,indilst2remove, snplst2exclde, problst2exclde,oproblst2exclde,eproblst2exclde,p_smr, cis_itvl,traitlstName,oprobe, eprobe, oprobe2rm, eprobe2rm,cis2all,ld_prune_multi,ldmatrix, trev, snpproblstName, diff_freq,diff_freq_ratio,multi_corr_snp_flg, get_snp_effects_flg, min_snp);
     else if((eqtlFileName2 != NULL) & mediation) smr_mediation_prbmatch(outFileName, bFileName,eqtlFileName2, eqtlFileName, gwasFileName, maf,indilstName, snplstName,problstName,oproblstName,eproblstName,indilst2remove, snplst2exclde, problst2exclde,oproblst2exclde,eproblst2exclde,p_smr, p_medsmr, cis_itvl,traitlstName,oprobe, eprobe, oprobe2rm, eprobe2rm,cis2all,ld_prune_multi, ldmatrix, trev, snpproblstName, diff_freq,diff_freq_ratio,multi_corr_snp_flg, get_snp_effects_flg, min_snp);
-    else if((eqtlFileName2 != NULL) & mediation_multiple_cis) smr_multi_mediation_cis(outFileName, bFileName,eqtlFileName2, eqtlFileName, gwasFileName, maf,indilstName, snplstName,problstName,oproblstName,eproblstName,indilst2remove, snplst2exclde, problst2exclde,oproblst2exclde,eproblst2exclde,p_smr, p_medsmr, cis_itvl,traitlstName,oprobe, eprobe, oprobe2rm, eprobe2rm,cis2all,ld_prune_multi, ldmatrix, trev, diff_freq,diff_freq_ratio,multi_corr_snp_flg, get_snp_effects_flg, min_snp, incmp_expo, med_R_thresh, uncorr_med, p_shrinkage, p_expo_med);
+    else if((eqtlFileName2 != NULL) & mediation_multiple_cis) smr_multi_mediation_cis(outFileName, bFileName,eqtlFileName2, eqtlFileName, gwasFileName, maf,indilstName, snplstName,problstName,oproblstName,eproblstName,indilst2remove, snplst2exclde, problst2exclde,oproblst2exclde,eproblst2exclde,p_smr, p_medsmr, cis_itvl,traitlstName,oprobe, eprobe, oprobe2rm, eprobe2rm,cis2all,ld_prune_multi, ldmatrix, trev, diff_freq,diff_freq_ratio,multi_corr_snp_flg, get_snp_effects_flg, get_snp_effects_top_flg, min_snp, incmp_expo, med_R_thresh, uncorr_med, p_shrinkage, p_expo_med);
     else if((eqtlFileName2 != NULL) & mediation_multiple_trans) smr_multi_mediation_trans(outFileName, bFileName, eqtlFileName2, eqtlFileName, gwasFileName, maf,indilstName, snplstName,problstName,oproblstName,eproblstName,indilst2remove, snplst2exclde, problst2exclde,oproblst2exclde,eproblst2exclde,p_smr, p_medsmr, cis_itvl,oprobe, eprobe, oprobe2rm, eprobe2rm, ld_prune_multi, ldmatrix, trev, snpproblstName, diff_freq,diff_freq_ratio, get_snp_effects_flg, min_snp, incmp_expo, core_med_lst, qtl_med_lst, med_corr_snps_lst, num_med, med_R_thresh, uncorr_med, p_shrinkage, p_expo_med);
     else if(lookup_flag) {
         if(bldFileName)  lookup(outFileName, bldFileName,  snplstName, snplst2exclde, chr, snprs, snp2rm,  fromsnprs,  tosnprs, snpWind,  snpwindFlag,  fromsnpkb,  tosnpkb, ldWind);

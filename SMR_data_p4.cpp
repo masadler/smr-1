@@ -3638,7 +3638,7 @@ void smr_rev_ivw_analysis(char* outFileName, char* bFileName,char* gwasFileName,
         return snp_count4multi;
     }
            
-    int mr_mediation_analysis_cis(bInfo* bdata, SMRWKMULT* smrwk, double &b_tot_ivw, double &se_tot_ivw, double &p_tot_ivw, double &b_top_direct, double &se_top_direct, double &p_top_direct, double &b_direct, double &se_direct, double &p_direct, int &n_snps_tot, int &n_snps_top, int &n_snps_e, double p_smr, double p_medsmr, int &medNum_included, vector<int> &med_sub_indx, int &top_med_indx, double ld_top_multi, bool ldmatrix, int N_ref, double trev, vector<string> &snp4msmr, bool multi_corr_snp_flg, bool get_snp_effects_flg, char* outFileName, int min_snp, string exponame, vector<string> &med_probe_names, vector<string> &med_probe_genes, vector<int> &med_probe_bp, MED_info* med_info, double med_R_thresh, bool uncorr_med, double p_shrinkage, double p_expo_med, string &mediation_status)
+    int mr_mediation_analysis_cis(bInfo* bdata, SMRWKMULT* smrwk, double &b_tot_ivw, double &se_tot_ivw, double &p_tot_ivw, double &b_top_direct, double &se_top_direct, double &p_top_direct, double &b_direct, double &se_direct, double &p_direct, int &n_snps_tot, int &n_snps_top, int &n_snps_e, double p_smr, double p_medsmr, int &medNum_included, vector<int> &med_sub_indx, int &top_med_indx, double ld_top_multi, bool ldmatrix, int N_ref, double trev, vector<string> &snp4msmr, bool multi_corr_snp_flg, bool get_snp_effects_flg, bool get_snp_effects_top_flg, char* outFileName, int min_snp, string exponame, vector<string> &med_probe_names, vector<string> &med_probe_genes, vector<int> &med_probe_bp, MED_info* med_info, double med_R_thresh, bool uncorr_med, double p_shrinkage, double p_expo_med, string &mediation_status)
     {
         string logstr;
         string snpstr;
@@ -4136,6 +4136,39 @@ void smr_rev_ivw_analysis(char* outFileName, char* bFileName,char* gwasFileName,
             fclose(snpfile);
         }
 
+        FILE* topsnpfile;
+        string topsnpfilename = string(outFileName) + "." + exponame + ".top.snps";
+
+        if (get_snp_effects_top_flg){
+            topsnpfile = fopen(topsnpfilename.c_str(), "w");
+            if (!(topsnpfile)) {
+                printf("ERROR: open error %s\n", topsnpfilename.c_str());
+                exit(1);
+            }
+            snpstr="SNP\tA1\tA2\tbeta.out\tse.out\tbeta." + exponame + "\tse." + exponame + "\tbeta." + med_probe_names[top_med_indx] + "\tse." + med_probe_names[top_med_indx] + "\n";
+       
+            if(fputs_checked(snpstr.c_str(),topsnpfile))
+            {
+                printf("ERROR: in writing file %s .\n", topsnpfilename.c_str());
+                exit(EXIT_FAILURE);
+            }
+
+            for (int j=0; j<n_snps_top; j++){
+                snpstr = smrwk->rs[slct_indx_tmp_top[sub_indx4top[j]]] + '\t' + smrwk->allele1[slct_indx_tmp_top[sub_indx4top[j]]] + '\t' + smrwk->allele2[slct_indx_tmp_top[sub_indx4top[j]]] + '\t';
+                snpstr += atos(smrwk->byz[slct_indx_tmp_top[sub_indx4top[j]]]) + '\t' + atos(smrwk->seyz[slct_indx_tmp_top[sub_indx4top[j]]]) + '\t' + atos(smrwk->bxz[slct_indx_tmp_top[sub_indx4top[j]]]) + '\t';
+                snpstr += atos(smrwk->sexz[slct_indx_tmp_top[sub_indx4top[j]]]) + '\t' + atos(smrwk->Xm_b(slct_indx_tmp_top[sub_indx4top[j]], top_med_indx)) + '\t';
+                snpstr += atos(smrwk->Xm_se(slct_indx_tmp_top[sub_indx4top[j]], top_med_indx)) + '\n';
+
+                if(fputs_checked(snpstr.c_str(),topsnpfile))
+                {
+                    printf("ERROR: in writing file %s .\n", topsnpfilename.c_str());
+                    exit(EXIT_FAILURE);
+                }
+            }
+
+            fclose(topsnpfile);
+        }
+
         return snp_count4multi;
     }
 
@@ -4524,7 +4557,7 @@ void smr_rev_ivw_analysis(char* outFileName, char* bFileName,char* gwasFileName,
         
     }
 
-    void smr_multi_mediation_cis(char* outFileName, char* bFileName,char* eqtlFileName, char* eqtlFileName2, char* gwasFileName, double maf,char* indilstName, char* snplstName,char* problstName, char* oproblstName,char* eproblstName, char* indilst2remove, char* snplst2exclde, char* problst2exclde, char* oproblst2exclde, char* eproblst2exclde, double p_smr, double p_medsmr, int cis_itvl,char* traitlstName, char* oprobe, char* eprobe, char* oprobe2rm, char* eprobe2rm, bool cis2all, double ld_top_multi, bool ldmatrix, double trev, double afthresh,double percenthresh, bool multi_corr_snp_flg, bool get_snp_effects_flg, int min_snp, bool incmp_expo, double med_R_thresh, bool uncorr_med, double p_shrinkage, double p_expo_med)
+    void smr_multi_mediation_cis(char* outFileName, char* bFileName,char* eqtlFileName, char* eqtlFileName2, char* gwasFileName, double maf,char* indilstName, char* snplstName,char* problstName, char* oproblstName,char* eproblstName, char* indilst2remove, char* snplst2exclde, char* problst2exclde, char* oproblst2exclde, char* eproblst2exclde, double p_smr, double p_medsmr, int cis_itvl,char* traitlstName, char* oprobe, char* eprobe, char* oprobe2rm, char* eprobe2rm, bool cis2all, double ld_top_multi, bool ldmatrix, double trev, double afthresh,double percenthresh, bool multi_corr_snp_flg, bool get_snp_effects_flg, bool get_snp_effects_top_flg, int min_snp, bool incmp_expo, double med_R_thresh, bool uncorr_med, double p_shrinkage, double p_expo_med)
     {
 
         //here eqtlFileName is the outcome and eqtlFileName2 is the exposure. in the main we pass the outcome (eqtlFileName2) to eqtlFileName and the exposure (eqtlFileName) to eqtlFileName2
@@ -4947,7 +4980,7 @@ void smr_rev_ivw_analysis(char* outFileName, char* bFileName,char* gwasFileName,
             int n_snps_tot = -9, n_snps_top = -9, top_med_indx = -9, n_snps_e = -9;
             mediation_status = "Mediation analysis conducted.";
 
-            int snp_count=mr_mediation_analysis_cis(&bdata, &smrwk, b_tot_ivw, se_tot_ivw, p_tot_ivw, b_top_direct, se_top_direct, p_top_direct, b_direct, se_direct, p_direct, n_snps_tot, n_snps_top, n_snps_e, p_smr, p_medsmr, medNum_included, med_sub_indx, top_med_indx, ld_top_multi, ldmatrix, N_ref, trev, snp4msmr, multi_corr_snp_flg, get_snp_effects_flg, outFileName, min_snp, exponame, med_probe_names, med_probe_genes, med_probe_bp, &med_info, med_R_thresh, uncorr_med, p_shrinkage, p_expo_med, mediation_status);
+            int snp_count=mr_mediation_analysis_cis(&bdata, &smrwk, b_tot_ivw, se_tot_ivw, p_tot_ivw, b_top_direct, se_top_direct, p_top_direct, b_direct, se_direct, p_direct, n_snps_tot, n_snps_top, n_snps_e, p_smr, p_medsmr, medNum_included, med_sub_indx, top_med_indx, ld_top_multi, ldmatrix, N_ref, trev, snp4msmr, multi_corr_snp_flg, get_snp_effects_flg, get_snp_effects_top_flg, outFileName, min_snp, exponame, med_probe_names, med_probe_genes, med_probe_bp, &med_info, med_R_thresh, uncorr_med, p_shrinkage, p_expo_med, mediation_status);
             
             expostr = exponame + '\t' + expogene + '\t' + mediation_status + '\n';
             if(fputs_checked(expostr.c_str(),expolst))
