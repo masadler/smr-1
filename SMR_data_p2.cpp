@@ -3171,12 +3171,12 @@ namespace SMRDATA
                 int epi_chr=prbiflst[idx].probechr;
                 if(epi_chr != prbchr)
                 {
-                    printf("ERROR: the same probe ID %s found on different chromosomes.\n",vs_buf[5].c_str() );
+                    printf("ERROR: the same probe ID %s found on different chromosomes.\n",vs_buf[6].c_str() );
                     exit(EXIT_FAILURE);
                 }
                 if(epi_bp != atoi(vs_buf[8].c_str()))
                 {
-                    printf("ERROR: multiple posisions found for the same probe %s.\n",vs_buf[5].c_str() );
+                    printf("ERROR: multiple positions found for the same probe %s.\n",vs_buf[6].c_str() );
                     exit(EXIT_FAILURE);
                 }
                 _ttl_rs[idx].push_back(vs_buf[0].c_str());
