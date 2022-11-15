@@ -3638,7 +3638,7 @@ void smr_rev_ivw_analysis(char* outFileName, char* bFileName,char* gwasFileName,
         return snp_count4multi;
     }
            
-    int mr_mediation_analysis_cis(bInfo* bdata, SMRWKMULT* smrwk, double &b_tot_ivw, double &se_tot_ivw, double &p_tot_ivw, double &b_top_direct, double &se_top_direct, double &p_top_direct, double &b_direct, double &se_direct, double &p_direct, int &n_snps_tot, int &n_snps_top, int &n_snps_e, double p_smr, double p_medsmr, int &medNum_included, vector<int> &med_sub_indx, int &top_med_indx, double ld_top_multi, bool ldmatrix, int N_ref, double trev, vector<string> &snp4msmr, bool multi_corr_snp_flg, bool get_snp_effects_flg, bool get_snp_effects_top_flg, char* outFileName, int min_snp, string exponame, vector<string> &med_probe_names, vector<string> &med_probe_genes, vector<int> &med_probe_bp, MED_info* med_info, double med_R_thresh, bool uncorr_med, double p_shrinkage, double p_expo_med, string &mediation_status)
+    int mr_mediation_analysis_cis(bInfo* bdata, SMRWKMULT* smrwk, double &b_tot_ivw, double &se_tot_ivw, double &p_tot_ivw, double &b_top_direct, double &se_top_direct, double &p_top_direct, double &b_direct, double &se_direct, double &p_direct, int &n_snps_tot, int &n_snps_top, int &n_snps_e, double p_smr, double p_medsmr, int &medNum_included, vector<int> &med_sub_indx, int &top_med_indx, double ld_top_multi, bool ldmatrix, int N_ref, double trev, vector<string> &snp4msmr, bool multi_corr_snp_flg, bool get_snp_effects_flg, bool get_snp_effects_top_flg, char* outFileName, int min_snp, string exponame, vector<string> &med_probe_names, vector<string> &med_probe_genes, vector<int> &med_probe_bp, MED_info* med_info, double med_R_thresh, bool uncorr_med, bool exclude_top_SNP, double p_shrinkage, double p_expo_med, string &mediation_status)
     {
         string logstr;
         string snpstr;
@@ -3711,6 +3711,37 @@ void smr_rev_ivw_analysis(char* outFileName, char* bFileName,char* gwasFileName,
             cor_calc(Ctot, _X);
         }
 
+        VectorXd bzx_totmr_extop(num_e_SNPs-1), sezx_totmr_extop(num_e_SNPs-1); 
+        VectorXd bzy_totmr_extop(num_e_SNPs-1), sezy_totmr_extop(num_e_SNPs-1);
+        MatrixXd Ctot_extop(num_e_SNPs-1, num_e_SNPs-1);
+        if (exclude_top_SNP){
+            int top_idx=0;
+            double top_val=0;
+            for (int j=0; j<num_e_SNPs; j++){
+                if (fabs(bzx_totmr(j)/sezx_totmr(j)) > top_val){
+                    top_idx = j;
+                    top_val = fabs(bzx_totmr(j)/sezx_totmr(j));
+                }
+            }
+
+            // Fill in effect sizes
+            int j_new=0;
+            for (int j=0; j<num_e_SNPs; j++){
+                if (j==top_idx) continue;
+                bzx_totmr_extop(j_new) = bzx_totmr(j);
+                sezx_totmr_extop(j_new) = sezx_totmr(j);
+                bzy_totmr_extop(j_new) = bzy_totmr(j);
+                sezy_totmr_extop(j_new) = sezy_totmr(j);
+                int ji_new =0;
+                for (int ji=0; ji<num_e_SNPs; ji++){
+                    if (ji==top_idx) continue;
+                    Ctot_extop(j_new,ji_new) = Ctot(j,ji);
+                    ji_new++;
+                }
+                j_new++;
+            }
+        }
+
         // Based on these SNPs calculate MR effects on mediator.
 
         double b_xm, se_xm, p_xm, zrevm;
@@ -3762,6 +3793,48 @@ void smr_rev_ivw_analysis(char* outFileName, char* bFileName,char* gwasFileName,
                 med_indx.push_back(k);
                 cor_med_val.push_back(fabs(b_xm/se_xm));
                 cor_med_val_slct.push_back(fabs(b_xm/se_xm));
+
+                if (exclude_top_SNP){
+                    if (n_xm > 1){
+                        int top_idx=0;
+                        double top_val=0;
+                        for (int j=0; j<n_xm; j++){
+                            if (fabs(expo_xz(j)/expo_sexz(j)) > top_val){
+                                top_idx = j;
+                                top_val = fabs(expo_xz(j)/expo_sexz(j));
+                            }
+                        }
+
+                        VectorXd expo_xz_extop(n_xm-1), expo_sexz_extop(n_xm-1); 
+                        VectorXd med_mz_extop(n_xm-1), med_semz_extop(n_xm-1);
+                        MatrixXd Cxm_extop(n_xm-1, n_xm-1);
+
+                        // Fill in effect sizes
+                        int j_new=0;
+                        for (int j=0; j<n_xm; j++){
+                            if (j==top_idx) continue;
+                            expo_xz_extop(j_new) = expo_xz(j);
+                            expo_sexz_extop(j_new) = expo_sexz(j);
+                            med_mz_extop(j_new) = med_mz(j);
+                            med_semz_extop(j_new) = med_semz(j);
+                            int ji_new =0;
+                            for (int ji=0; ji<n_xm; ji++){
+                                if (ji==top_idx) continue;
+                                Cxm_extop(j_new,ji_new) = Cxm(j,ji);
+                                ji_new++;
+                            }
+                            j_new++;
+                        }
+                        mr_ivw_LD(expo_xz_extop, med_mz_extop, expo_sexz_extop, med_semz_extop, Cxm_extop, b_xm, se_xm, p_xm, N_ref);
+                        n_xm = n_xm-1;
+                    }
+                    else {
+                        n_xm = 0;
+                        b_xm = 0; 
+                        se_xm = 0;
+                        p_xm = 1;
+                    }
+                }
 
                 med_info->Med_ID.push_back(med_probe_names[k]); 
                 med_info->Gene_ID.push_back(med_probe_genes[k]);
@@ -4001,6 +4074,42 @@ void smr_rev_ivw_analysis(char* outFileName, char* bFileName,char* gwasFileName,
         }
         else Ccis.setIdentity(Id4cis_pruned.size(), Id4cis_pruned.size());
 
+        // find idx of top SNP if exclude_top_SNP activated
+        MatrixXd X_extop(snp_count4multi-1, medNum_included + 1);
+        VectorXd yz_extop(snp_count4multi-1), SEs_extop((medNum_included + 2)*(snp_count4multi-1));
+        MatrixXd Ccis_extop(snp_count4multi-1, snp_count4multi-1);
+        if (exclude_top_SNP){
+            int top_idx=0;
+            double top_val=0;
+            for (int j=0; j<snp_count4multi; j++){
+                if (X_z(j,0) > top_val){
+                    top_idx = j;
+                    top_val = X_z(j,0);
+                }
+            }
+
+            // Fill in effect sizes
+            int j_new=0;
+            for (int j=0; j<snp_count4multi; j++){
+                if (j==top_idx) continue;
+                X_extop(j_new,0) = X(j,0);
+                yz_extop(j_new) = yz(j);
+                SEs_extop(j_new) = SEs(j);
+                SEs_extop((medNum_included+1)*(snp_count4multi-1)+j_new) = SEs((medNum_included+1)*(snp_count4multi-1)+j);
+                for (int k=0; k<medNum_included; k++){
+                    X_extop(j_new,k+1) = X(j,k+1);
+                    SEs_extop((k+1)*(snp_count4multi-1)+j_new) = SEs((k+1)*(snp_count4multi-1)+j);
+                }
+                int ji_new =0;
+                for (int ji=0; ji<snp_count4multi; ji++){
+                    if (ji==top_idx) continue;
+                    Ccis_extop(j_new,ji_new) = Ccis(j,ji);
+                    ji_new++;
+                }
+                j_new++;
+            }
+        }
+
         // Pruning for top-mediator SNPs
         make_XMat(bdata, Id4top, _X);
         vector<int> sub_indx4top;     
@@ -4034,11 +4143,19 @@ void smr_rev_ivw_analysis(char* outFileName, char* bFileName,char* gwasFileName,
 
         // total exposure effect
 
-        if (ldmatrix) {    
-            mr_ivw_LD(bzx_totmr, bzy_totmr, sezx_totmr, sezy_totmr, Ctot, b_tot_ivw, se_tot_ivw, p_tot_ivw, N_ref);
-        } else mr_ivw(bzx_totmr, bzy_totmr, sezx_totmr, sezy_totmr, b_tot_ivw, se_tot_ivw, p_tot_ivw);       
+        if (!exclude_top_SNP){
+            if (ldmatrix) {    
+                mr_ivw_LD(bzx_totmr, bzy_totmr, sezx_totmr, sezy_totmr, Ctot, b_tot_ivw, se_tot_ivw, p_tot_ivw, N_ref);
+            } else mr_ivw(bzx_totmr, bzy_totmr, sezx_totmr, sezy_totmr, b_tot_ivw, se_tot_ivw, p_tot_ivw);       
 
-        cout << "Total MR effects: b = " << b_tot_ivw << "; p = " << p_tot_ivw << endl;
+            cout << "Total MR effects: b = " << b_tot_ivw << "; p = " << p_tot_ivw << endl;
+        } else {
+            if (ldmatrix) {    
+                mr_ivw_LD(bzx_totmr_extop, bzy_totmr_extop, sezx_totmr_extop, sezy_totmr_extop, Ctot_extop, b_tot_ivw, se_tot_ivw, p_tot_ivw, N_ref);
+            } else mr_ivw(bzx_totmr_extop, bzy_totmr_extop, sezx_totmr_extop, sezy_totmr_extop, b_tot_ivw, se_tot_ivw, p_tot_ivw);       
+
+            cout << "Total MR effects (without top SNP): b = " << b_tot_ivw << "; p = " << p_tot_ivw << endl;
+        }
         
         // Calculate the direct effect for top mediator
 
@@ -4079,19 +4196,35 @@ void smr_rev_ivw_analysis(char* outFileName, char* bFileName,char* gwasFileName,
             
         betas.resize(0), vars.resize(0);
 
-        mvmr_ivw_LD(X, yz, SEs, Ccis, betas, vars, N_ref);
-        b_direct = betas(0);
-        se_direct = sqrt(vars[0]);
-        p_direct = 2*pnorm(fabs(b_direct/se_direct));
+        if (!exclude_top_SNP){
+            mvmr_ivw_LD(X, yz, SEs, Ccis, betas, vars, N_ref);
+            b_direct = betas(0);
+            se_direct = sqrt(vars[0]);
+            p_direct = 2*pnorm(fabs(b_direct/se_direct));
 
-        for (int k=0; k<medNum_included; k++){
-            med_info->b_my.push_back(betas(k+1));
-            med_info->se_my.push_back(sqrt(vars[k+1]));
-            med_info->p_my.push_back(2*pnorm(fabs(betas(k+1)/sqrt(vars[k+1]))));
-            med_info->n_my.push_back(snp_count4multi);
+            for (int k=0; k<medNum_included; k++){
+                med_info->b_my.push_back(betas(k+1));
+                med_info->se_my.push_back(sqrt(vars[k+1]));
+                med_info->p_my.push_back(2*pnorm(fabs(betas(k+1)/sqrt(vars[k+1]))));
+                med_info->n_my.push_back(snp_count4multi);
+            }
+
+            cout << "Cis-mediation MR effects: b = " << b_direct << "; p = " << p_direct << endl;
+        } else {
+            mvmr_ivw_LD(X_extop, yz_extop, SEs_extop, Ccis, betas, vars, N_ref);
+            b_direct = betas(0);
+            se_direct = sqrt(vars[0]);
+            p_direct = 2*pnorm(fabs(b_direct/se_direct));
+
+            for (int k=0; k<medNum_included; k++){
+                med_info->b_my.push_back(betas(k+1));
+                med_info->se_my.push_back(sqrt(vars[k+1]));
+                med_info->p_my.push_back(2*pnorm(fabs(betas(k+1)/sqrt(vars[k+1]))));
+                med_info->n_my.push_back(snp_count4multi);
+            }
+
+            cout << "Cis-mediation MR effects (without top SNP): b = " << b_direct << "; p = " << p_direct << endl;
         }
-
-        cout << "Cis-mediation MR effects: b = " << b_direct << "; p = " << p_direct << endl;
 
         FILE* snpfile;
         string snpfilename = string(outFileName) + "." + exponame + ".snps";
@@ -4557,7 +4690,7 @@ void smr_rev_ivw_analysis(char* outFileName, char* bFileName,char* gwasFileName,
         
     }
 
-    void smr_multi_mediation_cis(char* outFileName, char* bFileName,char* eqtlFileName, char* eqtlFileName2, char* gwasFileName, double maf,char* indilstName, char* snplstName,char* problstName, char* oproblstName,char* eproblstName, char* indilst2remove, char* snplst2exclde, char* problst2exclde, char* oproblst2exclde, char* eproblst2exclde, double p_smr, double p_medsmr, int cis_itvl,char* traitlstName, char* oprobe, char* eprobe, char* oprobe2rm, char* eprobe2rm, bool cis2all, double ld_top_multi, bool ldmatrix, double trev, double afthresh,double percenthresh, bool multi_corr_snp_flg, bool get_snp_effects_flg, bool get_snp_effects_top_flg, int min_snp, bool incmp_expo, double med_R_thresh, bool uncorr_med, double p_shrinkage, double p_expo_med)
+    void smr_multi_mediation_cis(char* outFileName, char* bFileName,char* eqtlFileName, char* eqtlFileName2, char* gwasFileName, double maf,char* indilstName, char* snplstName,char* problstName, char* oproblstName,char* eproblstName, char* indilst2remove, char* snplst2exclde, char* problst2exclde, char* oproblst2exclde, char* eproblst2exclde, double p_smr, double p_medsmr, int cis_itvl,char* traitlstName, char* oprobe, char* eprobe, char* oprobe2rm, char* eprobe2rm, bool cis2all, double ld_top_multi, bool ldmatrix, double trev, double afthresh,double percenthresh, bool multi_corr_snp_flg, bool get_snp_effects_flg, bool get_snp_effects_top_flg, int min_snp, bool incmp_expo, double med_R_thresh, bool uncorr_med, bool exclude_top_SNP, double p_shrinkage, double p_expo_med)
     {
 
         //here eqtlFileName is the outcome and eqtlFileName2 is the exposure. in the main we pass the outcome (eqtlFileName2) to eqtlFileName and the exposure (eqtlFileName) to eqtlFileName2
@@ -4711,7 +4844,7 @@ void smr_rev_ivw_analysis(char* outFileName, char* bFileName,char* gwasFileName,
         
         outstr="Expo_ID\tExpo_Name\tChr\tExpo_bp\tTop_Med_ID\tTop_Med_Name\tb_ivw_tot\tse_ivw_tot\tp_ivw_tot\t";
         outstr+="b_direct_top\tse_direct_top\tp_direct_top\tb_direct_cis\tse_direct_cis\tp_direct_cis\tn_snps_tot\t";
-        outstr+="n_snps_top\tn_snps_cis\tn_snps_e\tnum_med_cis\n";
+        outstr+="n_snps_top\tn_snps_cis\tn_snps_e\tnum_med_cis\tnum_med_cis_present\n";
         
         if(fputs_checked(outstr.c_str(),smr))
         {
@@ -4980,8 +5113,8 @@ void smr_rev_ivw_analysis(char* outFileName, char* bFileName,char* gwasFileName,
             int n_snps_tot = -9, n_snps_top = -9, top_med_indx = -9, n_snps_e = -9;
             mediation_status = "Mediation analysis conducted.";
 
-            int snp_count=mr_mediation_analysis_cis(&bdata, &smrwk, b_tot_ivw, se_tot_ivw, p_tot_ivw, b_top_direct, se_top_direct, p_top_direct, b_direct, se_direct, p_direct, n_snps_tot, n_snps_top, n_snps_e, p_smr, p_medsmr, medNum_included, med_sub_indx, top_med_indx, ld_top_multi, ldmatrix, N_ref, trev, snp4msmr, multi_corr_snp_flg, get_snp_effects_flg, get_snp_effects_top_flg, outFileName, min_snp, exponame, med_probe_names, med_probe_genes, med_probe_bp, &med_info, med_R_thresh, uncorr_med, p_shrinkage, p_expo_med, mediation_status);
-            
+            int snp_count=mr_mediation_analysis_cis(&bdata, &smrwk, b_tot_ivw, se_tot_ivw, p_tot_ivw, b_top_direct, se_top_direct, p_top_direct, b_direct, se_direct, p_direct, n_snps_tot, n_snps_top, n_snps_e, p_smr, p_medsmr, medNum_included, med_sub_indx, top_med_indx, ld_top_multi, ldmatrix, N_ref, trev, snp4msmr, multi_corr_snp_flg, get_snp_effects_flg, get_snp_effects_top_flg, outFileName, min_snp, exponame, med_probe_names, med_probe_genes, med_probe_bp, &med_info, med_R_thresh, uncorr_med, exclude_top_SNP, p_shrinkage, p_expo_med, mediation_status);
+
             expostr = exponame + '\t' + expogene + '\t' + mediation_status + '\n';
             if(fputs_checked(expostr.c_str(),expolst))
             {
@@ -5030,14 +5163,20 @@ void smr_rev_ivw_analysis(char* outFileName, char* bFileName,char* gwasFileName,
                 }
             }
 
-            // end of output        
+            // end of output
+            if (exclude_top_SNP){
+                n_snps_tot = n_snps_tot-1;
+                snp_count = snp_count-1;
+                n_snps_e = n_snps_e-1;
+            }        
 
             outstr =  exponame + '\t' + expogene + '\t' + atos(expochr) + '\t' + atos(expobp) + '\t'; 
             outstr += med_probe_names[top_med_indx] + '\t' + med_probe_genes[top_med_indx] + '\t';
             outstr += atos(b_tot_ivw)  + '\t' + atos(se_tot_ivw) + '\t' + atos(p_tot_ivw) + '\t';
             outstr += atos(b_top_direct)  + '\t' + atos(se_top_direct) + '\t' + atos(p_top_direct) + '\t';
             outstr += atos(b_direct)  + '\t' + atos(se_direct) + '\t' + atos(p_direct) + '\t';
-            outstr += atos(n_snps_tot) + '\t' + atos(n_snps_top) + '\t' + atos(snp_count) + '\t' + atos(n_snps_e) + '\t' + atos(medNum_included) + '\n';
+            outstr += atos(n_snps_tot) + '\t' + atos(n_snps_top) + '\t' + atos(snp_count) + '\t' + atos(n_snps_e) + '\t';
+            outstr += atos(medNum_included) + '\t' + atos(medNum_cis) + '\n';
             
             if(fputs_checked(outstr.c_str(),smr))
             {

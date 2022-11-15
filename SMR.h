@@ -27,7 +27,7 @@ static inline void FLAGS_VALID_CK(int option_num, char* option_str[])
         "--ld-wind","--bld","--make-bld","--snp-rm","--qtltools-nominal-format","--qtltools-permu-format", "--nmecs", "--beqtl-probe-match", "--mediation-probe-match", "--smr-gwas-to-gwas",
         "--multi-uncorr-snp", "--get-snp-effects", "--get-snp-effects-top", "--min-snp", "--mediation-cis", "--beqtl-cis", "--calcul-cormat",
         "--incomplete-expo", "--core-mediators", "--mediator-qtls", "--mediator-corr-snps", "--mediation-trans", "--trans-dense", "--num-med", "--uncorr-med", "--p-shrinkage", 
-        "--ld-matrix", "--p-expo-med", "--trev"
+        "--ld-matrix", "--p-expo-med", "--trev", "--exclude-top-SNP"
     };
     
     vector<string> flags(flgs, flgs + sizeof(flgs)/sizeof(flgs[0]));
