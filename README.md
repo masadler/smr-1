@@ -10,7 +10,7 @@ Wu Y, Zeng J, Zhang F, Zhu Z, Qi T, Zheng Z, Lloyd-Jones LR, Marioni RE, Martin 
 
 as well as the extension to univariable and multivariable MR-IVW analyses:
 
-Sadler MC, Auwerx C, Porcu E & Kutalik Z (2021) Quantifying mediation between omics layers and complex traits. [bioRxiv 2021.09.29.462396]( https://doi.org/10.1101/2021.09.29.462396)
+Sadler MC, Auwerx C, Porcu E & Kutalik Z (2022) Quantifying the role of transcript levels in mediating DNA methylation effects on complex traits and diseases. [Nature Communications, 13:7759](https://doi.org/10.1038/s41467-022-35196-3)
 
 ## Installation
 
