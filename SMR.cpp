@@ -211,6 +211,7 @@ void option(int option_num, char* option_str[])
     int setWind=-9;
     bool ssmrflg=false;
     bool ssmrivwflg=false;
+    bool ssmrivwtransflg=false;
     bool ssmrrevflg=false;
     bool ssmrgwastogwasflg=false;
     bool ldmatrix=false;
@@ -486,6 +487,10 @@ void option(int option_num, char* option_str[])
         else if (0 == strcmp(option_str[i], "--smr-ivw")){
             ssmrivwflg=true;
             printf("--smr-ivw \n");
+        }
+        else if (0 == strcmp(option_str[i], "--smr-ivw-trans")){
+            ssmrivwtransflg=true;
+            printf("--smr-ivw-trans \n");
         }
         else if (0 == strcmp(option_str[i], "--smr-gwas-to-gwas")){
             ssmrgwastogwasflg=true;
@@ -1295,6 +1300,7 @@ void option(int option_num, char* option_str[])
     else if(gwasFileName2 != NULL && ssmrgwastogwasflg)  smr_ivw_gwas_gwas(outFileName, bFileName, gwasFileName, gwasFileName2, maf,indilstName, snplstName,problstName, indilst2remove, snplst2exclde, problst2exclde, p_smr, cis_itvl, genelistName, chr, prbchr, prbname, fromprbname, toprbname, prbWind, fromprbkb, toprbkb, prbwindFlag, genename, snpchr, snprs, fromsnprs, tosnprs, snpWind, fromsnpkb, tosnpkb, snpwindFlag, cis_flag, setlstName, geneAnnoName, ld_prune_multi, ldmatrix, trev, diff_freq, diff_freq_ratio, get_snp_effects_flg, min_snp);
     else if(ssmrflg)  smr_multipleSNP(outFileName, bFileName, gwasFileName, eqtlFileName, maf,indilstName, snplstName,problstName, bFlag, p_hetero, ld_prune, m_hetero ,opt_hetero, indilst2remove, snplst2exclde, problst2exclde, p_smr, refSNP, heidioffFlag, cis_itvl, genelistName, chr, prbchr, prbname, fromprbname, toprbname, prbWind, fromprbkb, toprbkb, prbwindFlag, genename, snpchr, snprs, fromsnprs, tosnprs, snpWind, fromsnpkb, tosnpkb, snpwindFlag, cis_flag, setlstName, geneAnnoName, setWind, ld_min,threshpsmrest,  sampleoverlap,  pmecs,  minsnpcor, ld_prune_multi, diff_freq, diff_freq_ratio);
     else if(ssmrivwflg)  smr_ivw_analysis(outFileName, bFileName, gwasFileName, eqtlFileName, maf,indilstName, snplstName,problstName, indilst2remove, snplst2exclde, problst2exclde, p_smr, cis_itvl, genelistName, chr, prbchr, prbname, fromprbname, toprbname, prbWind, fromprbkb, toprbkb, prbwindFlag, genename, snpchr, snprs, fromsnprs, tosnprs, snpWind, fromsnpkb, tosnpkb, snpwindFlag, cis_flag, setlstName, geneAnnoName, ld_prune_multi, ldmatrix, trev, diff_freq, diff_freq_ratio, get_snp_effects_flg, min_snp);
+    else if(ssmrivwtransflg)  smr_ivw_trans_analysis(outFileName, bFileName, gwasFileName, eqtlFileName, maf,indilstName, snplstName,problstName, indilst2remove, snplst2exclde, problst2exclde, p_smr, genelistName, chr, prbchr, prbname, fromprbname, toprbname, prbWind, fromprbkb, toprbkb, prbwindFlag, genename, snpchr, snprs, fromsnprs, tosnprs, snpWind, fromsnpkb, tosnpkb, snpwindFlag, setlstName, geneAnnoName, ld_prune_multi, ldmatrix, trev, diff_freq, diff_freq_ratio, get_snp_effects_flg, min_snp);
     else if(ssmrrevflg)  smr_rev_ivw_analysis(outFileName, bFileName, gwasFileName, eqtlFileName, maf,indilstName, snplstName,problstName, indilst2remove, snplst2exclde, problst2exclde, p_gwas, cis_itvl, genelistName, chr, prbchr, prbname, fromprbname, toprbname, prbWind, fromprbkb, toprbkb, prbwindFlag, genename, snpchr, snprs, fromsnprs, tosnprs, snpWind, fromsnpkb, tosnpkb, snpwindFlag, cis_flag, setlstName, geneAnnoName, ld_prune_multi, ldmatrix, trev, diff_freq, diff_freq_ratio, get_snp_effects_flg, min_snp);
     else if(smr_flag && !smr_trans_flag) smr(outFileName, bFileName,bldFileName, gwasFileName, eqtlFileName, maf,indilstName, snplstName,problstName,bFlag,p_hetero,ld_prune,m_hetero,opt_hetero, indilst2remove, snplst2exclde, problst2exclde,p_smr,refSNP, heidioffFlag,cis_itvl, genelistName,  chr, prbchr,  prbname,  fromprbname,  toprbname, prbWind, fromprbkb,  toprbkb, prbwindFlag,  genename, snpchr,  snprs,  fromsnprs,  tosnprs, snpWind, fromsnpkb,  tosnpkb, snpwindFlag, cis_flag,threshpsmrest,new_het_mth,opt_slct_flag,prbseqregion,ld_min,sampleoverlap,pmecs,minsnpcor,targetsnpproblstName,snpproblstName, diff_freq,diff_freq_ratio);
     else if (est_effe_spl_size_flg) est_effect_splsize(eqtlsmaslstName,eqtlFileName, snplstName,problstName,snplst2exclde, problst2exclde,p_smr);
